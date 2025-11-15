@@ -12,21 +12,33 @@ class Barco:
 
 		# Lista de aciertos recibidos
 		self.aciertos = {}
-		# Ubicación
+ 		# Diccionario de posiciones del barco: False = intacto, True = impactado		self.ubicacion = {}
 		self.ubicacion = {}
-
-		self.cant_aciertos = 0
-		self.esta_hundido = False
-		self.esta_tocado = False
-
 
 	def posicionar(self, punto_inicial, punto_final):
 		"""
 		punto_inicial (xi,yi) y punto_final (xf,yf)
-		verificar que la posicion no supere el tamaño del barco
-
-		esta_posicionado = True
+		verificar que la posicion no supere el tamaño del barco y 
+		que el barco se quiere posicionar correctamente
 		"""
+		xi, yi = punto_inicial
+        xf, yf = punto_final
+
+        if xi == xf:  # vertical
+            if abs(yf - yi) + 1 != self.eslora: 
+                raise ValueError("La posición no coincide con la eslora")
+            for y in range(min(yi, yf), max(yi, yf)+1):
+                self.ubicacion[(xi, y)] = False # la posición se instancia como falsa, no tocada
+
+        elif yi == yf:  # horizontal
+            if abs(xf - xi) + 1 != self.eslora:
+                raise ValueError("La posición no coincide con la eslora")
+            for x in range(min(xi, xf), max(xi, xf)+1):
+                self.ubicacion[(x, yi)] = False 
+
+        else: # no se coloca un barco en diagonal o puntos separados del tablero
+            raise ValueError("El barco debe estar alineado horizontal o vertical")
+
 		pass
 
 	def esta_posicionado(self):
@@ -34,12 +46,14 @@ class Barco:
 		Está posicionado el barco? Si nuestro listado de ubicaciónes no tiene \
 				datos entonces el barco no está posicionado
 		"""
-		return len(self.ubicacion) != 0
+		return bool(self.ubicacion)
 
 	def danar(self, posicion):
+ 		"""
+		Marca un impacto en la posición indicada
 		"""
-		Funcion para dañar el barco
-		"""
+        if posicion in self.ubicacion:
+            self.ubicacion[posicion] = True
 		
 		self.cant_aciertos += 1
 
@@ -47,10 +61,10 @@ class Barco:
 		"""
 		Función para saber si el barco esta tocado
 		"""
-		return self.cant_aciertos > 0
+		return any(self.ubicacion.values())
 
 	def esta_hundido(self):
 		"""
 		Función para saber si el barco esta hundido
 		"""
-		return self.cant_aciertos == self.eslora
+		return all(self.ubicacion.values())
