@@ -11,18 +11,18 @@ def disparo_jugador(self, tablero_oponente):
                     print("¡Disparo fuera del tablero! Intenta otra vez.")
                     continue
 
-                celda = tablero_oponente.matriz[fila][columna]
+                celda = board_shoots[fila][columna]
                 if celda in ('X', '-'):
                     print("¡Ya disparaste ahí! Intenta otra vez.")
                     continue
 
                 if celda == 'O':
-                    tablero_oponente.matriz[fila][columna] = 'X'
+                    board_shoots[fila][columna] = 'X'
                     print(f"¡Impacto en ({fila}, {columna})! ¡Vuelves a disparar!")
                     tablero_oponente.mostrar(ocultar_barcos=True)
                     continue  # puede seguir disparando
                 else:
-                    tablero_oponente.matriz[fila][columna] = '-'
+                    board_shoots[fila][columna] = '-'
                     print(f"Fallo en ({fila}, {columna}). Fin de tu turno.")
                     tablero_oponente.mostrar(ocultar_barcos=True)
                     break
@@ -40,7 +40,7 @@ def disparo_oponente(self, tablero_jugador):
         fila = random.randint(0, self.tamaño - 1)
         columna = random.randint(0, self.tamaño - 1)
 
-        celda = tablero_jugador.matriz[fila][columna]
+        celda = board_main[fila][columna]
 
         # Evita disparar donde ya disparó
         if celda in ('X', '-'):
@@ -49,14 +49,12 @@ def disparo_oponente(self, tablero_jugador):
         
         # Si acierta
         if celda == 'O':
-            tablero_jugador.matriz[fila][columna] = 'X'
+            board_main[fila][columna] = 'X'
             print(f"El oponente impactó en ({fila}, {columna}) ¡dispara de nuevo!")
-            tablero_jugador.mostrar(ocultar_barcos=False)  # Puedes ajustar si quieres ocultar
             continue  # sigue disparando
         
         # Si falla
         else:
-            tablero_jugador.matriz[fila][columna] = '-'
+            board_main[fila][columna] = '-'
             print(f"El oponente falló en ({fila}, {columna}). Fin del turno enemigo.")
-            tablero_jugador.mostrar(ocultar_barcos=False)
             break
