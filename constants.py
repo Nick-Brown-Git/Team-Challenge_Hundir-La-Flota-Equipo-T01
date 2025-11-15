@@ -24,6 +24,8 @@ BARCOS = [
     }
 ]
 
+ORIENTACION = [ "N", "S", "E", "O" ]
+
 SIMBOLO_ACIERTO = "X"
 SIMBOLO_AGUA = " "
 SIMBOLO_BARCO = "O"

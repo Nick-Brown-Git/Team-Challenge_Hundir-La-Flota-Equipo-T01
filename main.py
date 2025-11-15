@@ -22,3 +22,15 @@ for barco in barcos_disponibles:
     print(f"TAMAÑO: {barco.eslora}")
     print(f"¿Está posicionado en el tablero?:", barco.esta_posicionado())
     print("\n")
+
+
+tablero_jugador = Tablero("Jugador", constants.TABLERO_DIMENSION, barcos_disponibles)
+
+tablero_ia = Tablero("IA", constants.TABLERO_DIMENSION, barcos_disponibles)
+
+print("Queres que dibujemos los barcos?")
+tablero.dibujar_barcos()
+
+print("1. Mostrar tableros")
+print("2. Disparar")
+opcion = input("opcion:")

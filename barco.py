@@ -20,19 +20,25 @@ class Barco:
 		self.esta_tocado = False
 
 
-	def posicionar(self, punto_inicial, punto_final):
-		"""
-		punto_inicial (xi,yi) y punto_final (xf,yf)
-		verificar que la posicion no supere el tamaño del barco
+	def establecer_ubicacion(self, ubicacion):
+		self.ubicacion = ubicacion
 
+	def posicionar(self, punto_inicial, orientacion):
+		"""
+		Función para posicionar el barco en el tablero dando un punto inicial
+		y una orientación.
+
+		Args:
+			- punto_inicial (xi, yi)
+			- orientación (N, S, E, O)
 		esta_posicionado = True
 		"""
 		pass
 
 	def esta_posicionado(self):
 		"""
-		Está posicionado el barco? Si nuestro listado de ubicaciónes no tiene \
-				datos entonces el barco no está posicionado
+		Está posicionado el barco? Si nuestro listado de ubicaciónes no tiene
+		datos entonces el barco no está posicionado
 		"""
 		return len(self.ubicacion) != 0
 
@@ -40,7 +46,7 @@ class Barco:
 		"""
 		Funcion para dañar el barco
 		"""
-		
+
 		self.cant_aciertos += 1
 
 	def esta_tocado(self):
