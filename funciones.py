@@ -1,4 +1,4 @@
-def disparo_jugador(self, tablero_oponente):
+def disparo_jugador(self, board_shoots):
         """El jugador dispara hasta fallar."""
 
         print("\n--- Turno del id_jugador ---")
@@ -19,19 +19,19 @@ def disparo_jugador(self, tablero_oponente):
                 if celda == 'O':
                     board_shoots[fila][columna] = 'X'
                     print(f"¡Impacto en ({fila}, {columna})! ¡Vuelves a disparar!")
-                    tablero_oponente.mostrar(ocultar_barcos=True)
+                    board_shoots.mostrar(ocultar_barcos=True)
                     continue  # puede seguir disparando
                 else:
                     board_shoots[fila][columna] = '-'
                     print(f"Fallo en ({fila}, {columna}). Fin de tu turno.")
-                    tablero_oponente.mostrar(ocultar_barcos=True)
+                    board_shoots.mostrar(ocultar_barcos=True)
                     break
 
             except ValueError:
                 print("Por favor, ingresa solo números válidos.")
 
 
-def disparo_oponente(self, tablero_jugador):
+def disparo_oponente(self, board_main):
     """La computadora dispara hasta fallar."""
     print("\n--- Turno del oponente ---")
 
@@ -51,10 +51,12 @@ def disparo_oponente(self, tablero_jugador):
         if celda == 'O':
             board_main[fila][columna] = 'X'
             print(f"El oponente impactó en ({fila}, {columna}) ¡dispara de nuevo!")
+            board_main.mostrar(ocultar_barcos=True)
             continue  # sigue disparando
         
         # Si falla
         else:
             board_main[fila][columna] = '-'
             print(f"El oponente falló en ({fila}, {columna}). Fin del turno enemigo.")
+            board_main.mostrar(ocultar_barcos=True)
             break
