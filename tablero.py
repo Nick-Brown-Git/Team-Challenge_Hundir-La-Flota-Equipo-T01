@@ -92,7 +92,35 @@ class Tablero:
         dibujar en tablero board_ref
 
         """
-        pass
+        """El jugador dispara hasta fallar."""
+
+        print(f"\n--- Turno del {id_jugador} ---")
+        while True:
+            try:
+                fila = int(input(f"Ingrese la fila (0-{self.tamaño-1}): "))
+                columna = int(input(f"Ingrese la columna (0-{self.tamaño-1}): "))
+
+                if not (0 <= fila < self.tamaño and 0 <= columna < self.tamaño):
+                    print("¡Disparo fuera del tablero! Intenta otra vez.")
+                    continue
+
+                celda = self.board_main[columna]
+                if celda in (SIMBOLO_ACIERTO, SIMBOLO_FALLO):
+                    print("¡Ya disparaste ahí! Intenta otra vez.")
+                    continue
+
+                if celda == SIMBOLO_BARCO:
+                    self.board_shoots[fila][columna] = SIMBOLO_ACIERTO
+                    print(f"¡Impacto en ({fila}, {columna})! ¡Vuelves a disparar!")
+                    continue  # puede seguir disparando
+                else:
+                    self.board_shoots[fila][columna] = SIMBOLO_FALLO
+                    print(f"Fallo en ({fila}, {columna}). Fin de tu turno.")
+                    break
+
+            except ValueError:
+                print("Por favor, ingresa solo números válidos.")
+        
 
 
     def dibujar_disparo_contrincante(self, disparo):
@@ -104,7 +132,33 @@ class Tablero:
 
         devolver si es acierto o fallo
         """
-        pass
+        """La computadora dispara hasta fallar."""
+        print(f"\n--- Turno del {oponente} ---")
+
+        while True:
+            # Elegir coordenadas aleatorias válidas
+            fila = random.randint(0, self.tamaño - 1)
+            columna = random.randint(0, self.tamaño - 1)
+
+            celda = self.board_main[fila][columna]
+
+            # Evita disparar donde ya disparó
+            if celda in (SIMBOLO_ACIERTO, SIMBOLO_FALLO):
+                print("¡Ya disparaste ahí! Intenta otra vez.")
+                continue  # buscar otro disparo válido
+            
+            # Si acierta
+            if celda == SIMBOLO_BARCO:
+                self.board_shoots[fila][columna] = SIMBOLO_ACIERTO
+                print(f"El oponente impactó en ({fila}, {columna}) ¡dispara de nuevo!")
+                continue  # sigue disparando
+            
+            # Si falla
+            else:
+                self.board_shoots[fila][columna] = SIMBOLO_FALLO
+                print(f"El oponente falló en ({fila}, {columna}). Fin del turno enemigo.")
+                break
+        
 
     def mostrar_tablero_referencia(self):
         self.board_shoots

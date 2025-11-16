@@ -1,4 +1,4 @@
-class Barco:
+#class Barco:
 	# eslora
 	# descripcion
 	# posicion
@@ -80,7 +80,7 @@ class Barco:
 
 
 
-	'''def __init__(self, descripcion, eslora, cantidad):
+'''def __init__(self, descripcion, eslora, cantidad):
 		self.descripcion = descripcion
 		self.eslora = eslora
 		self.cantidad = cantidad
