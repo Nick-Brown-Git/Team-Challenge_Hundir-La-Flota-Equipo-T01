@@ -5,23 +5,28 @@ class Barco:
 	# esta_tocado
 	# esta_hundido
 	# cant_aciertos
-	def __init__(self, descripcion, eslora, cantidad):
+	def __init__(self, descripcion, eslora):
 		self.descripcion = descripcion
 		self.eslora = eslora
-		self.cantidad = cantidad
 
 		# Lista de aciertos recibidos
 		self.aciertos = {}
+
 		# Ubicación
-		self.ubicacion = {}
+		self.coordenadas = []
 
 		self.cant_aciertos = 0
 		self.esta_hundido = False
 		self.esta_tocado = False
 
 
-	def establecer_ubicacion(self, ubicacion):
-		self.ubicacion = ubicacion
+	def establecer_ubicacion(self, coordenadas, orientacion):
+		if len(coordenadas) != self.eslora:
+			raise ValueError("Las coordenadas no coinciden con la eslora del barco.")
+
+		self.coordenadas = coordenadas
+		self.orientacion = orientacion
+
 
 	def posicionar(self, punto_inicial, orientacion):
 		"""
@@ -40,7 +45,7 @@ class Barco:
 		Está posicionado el barco? Si nuestro listado de ubicaciónes no tiene
 		datos entonces el barco no está posicionado
 		"""
-		return len(self.ubicacion) != 0
+		return len(self.coordenadas) != 0
 
 	def danar(self, posicion):
 		"""
@@ -60,3 +65,11 @@ class Barco:
 		Función para saber si el barco esta hundido
 		"""
 		return self.cant_aciertos == self.eslora
+
+	def mostrar(self):
+		print(f"{self.descripcion.upper()} ({self.eslora})") 
+		esta_posicionado = self.esta_posicionado()
+		print(f"¿Barco posicionado? {esta_posicionado}")
+		if esta_posicionado:
+			print(f"\tORIENTACIÓN: {self.orientacion}") 
+			print(f"\tCOORDENADAS: {self.coordenadas}") 
