@@ -29,18 +29,18 @@ for barco in barcos_disponibles:
 """
 
 tablero_jugador = Tablero("Jugador", constants.TABLERO_DIMENSION, barcos_disponibles)
-tablero_jugador.posicionar_barcos()
-fila, columna = tablero_jugador.dibujar_disparo_propio()
-
-
-
 tablero_ia = Tablero("IA", constants.TABLERO_DIMENSION, barcos_disponibles)
+
+tablero_jugador.posicionar_barcos()
 tablero_ia.posicionar_barcos()
-es_acierto = tablero_ia.dibujar_disparo_contrincante(fila, columna)
+
+disparo = (5,5) # disparo de jugador
+tablero_jugador.efectuar_disparo(disparo) # verificamos que sea valido
+es_acierto = tablero_ia.dibujar_disparo_enemigo(disparo) # dibujamos en tablero del contrincante el disparo y comprobamos si es acierto o no
+tablero_jugador.dibujar_disparo_propio(disparo, es_acierto) # dibujamos en nuestro tablero el resultado
 
 
-fila = int(input(f"Ingrese la fila (0-{self.tamaño-1}): "))
-columna = int(input(f"Ingrese la columna (0-{self.tamaño-1}): "))
-tablero_jugador.disparo_jugador((fila, columna), tablero_contrincante.board_main)
-
-
+disparo = (3,7) # disparo de ia
+tablero_ia.efectuar_disparo(disparo) # verificamos qque sea un disparo válido
+es_acierto = tablero_jugador.dibujar_disparo_enemigo(disparo) # dibujamos en tablero enemigo el disparo y comprobamos si es acierto o no
+tablero_jugador.dibujar_disparo_propio(disparo, es_acierto) # dibujamos en tablero de ia el resultado

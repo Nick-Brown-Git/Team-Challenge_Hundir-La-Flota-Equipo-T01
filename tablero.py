@@ -59,7 +59,7 @@ class Tablero:
 		row, col = posicion
 		posicion_valida = False
 
-		print(f"\nValidando posición: ({row}, {col})")
+		print(f"Validando posición: ({row}, {col})")
 
 		is_valid_row = row >= 0 and row < self.size
 		is_valid_col = col >= 0 and col < self.size
@@ -281,17 +281,45 @@ class Tablero:
 	# }}}
 
 
-	def dibujar_disparo_propio(self, disparo, es_acierto):
+	def __es_disparo_repetido__(self, disparo):
+		es_repetido = True
+
+		x, y = disparo
+		terreno = self.board_shoots[x][y]
+		if terreno not in (const.SIMBOLO_ACIERTO, const.SIMBOLO_FALLO):
+			es_repetido = False
+
+		return es_repetido
+
+
+	def efectuar_disparo(self, disparo):
+		x, y = disparo
+		print(f"Efectuando disparo en ({x}, {y})...")
+
+		es_posicion_valida = self.__es_posicion_valida__(disparo)
+		es_repetido = self.__es_disparo_repetido__(disparo)
+		if (not es_posicion_valida) or (es_repetido):
+			print(f"{self.descripcion} dice: ¡MAYDAY! Error al efectar el disparo.")
+			return False
+
+		print("¡Disparo realizado con éxito!")
+		self.dibujar_disparo_propio(disparo)
+		return True
+
+
+	def dibujar_disparo_propio(self, disparo, es_acierto=False):
 		"""
 		dibujar en tablero board_ref
 
 		- verificar que el disparo no sea en un sitio utilizado anteriormente
 		"""
+		x, y = disparo
+		self.board_shoots[x][y] = const.SIMBOLO_ACIERTO if es_acierto else const.SIMBOLO_FALLO
+		
+		self.mostrar_tablero_referencia()
 
-		pass
 
-
-	def dibujar_disparo_contrincante(self, disparo):
+	def dibujar_disparo_enemigo(self, disparo):
 		"""
 		dibujar en tablero board_boats
 
@@ -300,11 +328,26 @@ class Tablero:
 
 		devolver si es acierto o fallo
 		"""
-		pass
+		x, y = disparo
+		es_acierto = self.board_main[x][y] == const.SIMBOLO_BARCO
+		if not es_acierto:
+			self.board_main[x][y] = const.SIMBOLO_FALLO
+			print(f"{self.descripcion} dice: Comandante, eso estuvo cerca.")
+			print("¡MISS SHOOT!")
+
+			return False
+		else:
+			print("¡MAYDAY, MAYDAY, MAYDAY!")
+			print(f"{self.descripcion} dice: Comandante, nos ha alcanzado el último disparo.")
+			print("¡HIT!")
+			self.board_main[x][y] = const.SIMBOLO_ACIERTO
+
+			return True
 
 
 	def mostrar_tablero_referencia(self):
-		self.board_shoots
+		print(self.board_shoots)
+
 
 	def mostrar_tablero_barcos(self):
-		self.board_main
+		print(self.board_main)
