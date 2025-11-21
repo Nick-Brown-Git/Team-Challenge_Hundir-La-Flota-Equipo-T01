@@ -6,18 +6,7 @@ from barco import Barco
 
 
 class Tablero:
-	# board_ref
-	# board_boats
-	# jugador/ia
-	# tamano
-	# barcos
-	# dibujar_disparos()
-	# es acierto o fallo?
-	# acierto en otro tablero
-	# mostrar tablero
-	# dibujar_barco() 
-	# barcos_disponibles
-	def __init__(self, descripcion, tamano, barcos):
+	def __init__(self, descripcion, tamano, barcos): # {{{
 		"""
 		Creamos dos tableros BOARD_REF y BOARD_BOATS.
 
@@ -29,6 +18,7 @@ class Tablero:
 
 		self.descripcion = descripcion
 		self.size = tamano
+		self.aciertos = 0
 
 		# Cargamos los barcos para que se encuentren disponibles en el tablero
 		self.__cargar_barcos__(barcos)
@@ -37,8 +27,8 @@ class Tablero:
 		print(f"Inicializando tableros de {self.size, self.size} para {self.descripcion}")
 		print(f"Se han cargado {len(self.barcos)} barcos en el tablero.")
 		print("="*50)
-
-
+		print("\n")
+	# }}}
 
 	def __cargar_barcos__(self, barcos): # {{{
 		"""
@@ -49,7 +39,6 @@ class Tablero:
 
 		self.barcos = barcos
 	# }}}
-
 
 	def __es_posicion_valida__(self, posicion): # {{{
 		"""
@@ -71,7 +60,6 @@ class Tablero:
 		return posicion_valida
 	# }}}
 
-
 	def __crear_posicion_aleatoria__(self): # {{{
 		"""
 		Función para generar una posición aleatoria
@@ -80,7 +68,6 @@ class Tablero:
 
 		return (random.randint(0,9), random.randint(0,9))
 	# }}}
-
 
 	def __generar_coordenadas__(self, barco): # {{{
 		"""
@@ -141,7 +128,6 @@ class Tablero:
 		return -1, -1, "-"
 	# }}}
 
-
 	def __dibujar__(self, posicion, simbolo, tablero): # {{{
 		"""
 		Función para dibujar en el tablero un símbolo
@@ -152,9 +138,8 @@ class Tablero:
 		"""
 		posicion_valida = self.__es_posicion_valida__(posicion)
 		if posicion_valida:
-				tablero[posicion[0], posicion[1]] = simbolo
+			tablero[posicion[0], posicion[1]] = simbolo
 	# }}}
-
 
 	def posicionar_barco(self, barco): # {{{
 		"""
@@ -235,7 +220,6 @@ class Tablero:
 		return barco.esta_posicionado()
 	# }}}
 
-
 	def posicionar_barcos(self): # {{{
 		"""
 		Función recursiva para posicionar los barcos que no se encuentren
@@ -251,7 +235,6 @@ class Tablero:
 			if barco_posicionado:
 				self.dibujar_barco(barco)
 	# }}}
-
 
 	def dibujar_barco(self, barco): # {{{
 		"""
@@ -280,8 +263,7 @@ class Tablero:
 			print("="*50)
 	# }}}
 
-
-	def __es_disparo_repetido__(self, disparo):
+	def __es_disparo_repetido__(self, disparo): # {{{
 		es_repetido = True
 
 		x, y = disparo
@@ -290,24 +272,24 @@ class Tablero:
 			es_repetido = False
 
 		return es_repetido
+	# }}}
 
-
-	def efectuar_disparo(self, disparo):
+	def efectuar_disparo(self, disparo): # {{{
 		x, y = disparo
 		print(f"Efectuando disparo en ({x}, {y})...")
 
 		es_posicion_valida = self.__es_posicion_valida__(disparo)
 		es_repetido = self.__es_disparo_repetido__(disparo)
 		if (not es_posicion_valida) or (es_repetido):
-			print(f"{self.descripcion} dice: ¡MAYDAY! Error al efectar el disparo.")
+			print(f"{self.descripcion} dice: ¡MAYDAY! Error al efectar el disparo. Intente nuevamente.")
 			return False
 
 		print("¡Disparo realizado con éxito!")
-		self.dibujar_disparo_propio(disparo)
+		# self.dibujar_disparo_propio(disparo)
 		return True
+	# }}}
 
-
-	def dibujar_disparo_propio(self, disparo, es_acierto=False):
+	def dibujar_disparo_propio(self, disparo, es_acierto=False): # {{{
 		"""
 		dibujar en tablero board_ref
 
@@ -315,11 +297,11 @@ class Tablero:
 		"""
 		x, y = disparo
 		self.board_shoots[x][y] = const.SIMBOLO_ACIERTO if es_acierto else const.SIMBOLO_FALLO
-		
+
 		self.mostrar_tablero_referencia()
+	# }}}
 
-
-	def dibujar_disparo_enemigo(self, disparo):
+	def dibujar_disparo_enemigo(self, disparo): # {{{
 		"""
 		dibujar en tablero board_boats
 
@@ -343,11 +325,10 @@ class Tablero:
 			self.board_main[x][y] = const.SIMBOLO_ACIERTO
 
 			return True
-
+	# }}}
 
 	def mostrar_tablero_referencia(self):
 		print(self.board_shoots)
-
 
 	def mostrar_tablero_barcos(self):
 		print(self.board_main)
