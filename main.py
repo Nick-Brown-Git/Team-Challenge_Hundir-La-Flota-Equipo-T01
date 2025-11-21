@@ -17,10 +17,17 @@ for barco in barcos:
 		barcos_disponibles.append(ship)
 
 player = Tablero("Jugador", constants.TABLERO_DIMENSION, barcos_disponibles)
+
+print("\n")
 opponent = Tablero("IA", constants.TABLERO_DIMENSION, barcos_disponibles)
 
+print("\n")
+print("\n")
 player.posicionar_barcos()
+print("\n")
 opponent.posicionar_barcos()
+print("\n")
+print("\n")
 
 turno_finalizado = utils.establecer_turno(player, opponent, False)
 print(turno_finalizado)

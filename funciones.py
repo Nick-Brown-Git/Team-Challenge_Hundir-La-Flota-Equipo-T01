@@ -10,8 +10,8 @@ def crear_coordenadas_automaticas(): # {{{
 	print("Generando coordenadas automáticas...")
 
 	return (
-		random.randint(0, const.TABLERO_DIMENSION),
-		random.randint(0, const.TABLERO_DIMENSION)
+		np.random.randint(0, const.TABLERO_DIMENSION),
+		np.random.randint(0, const.TABLERO_DIMENSION)
 	)
 # }}}
 
@@ -64,8 +64,12 @@ def establecer_turno(player, tablero_contrincante, disparo_automatico=False): # 
 				disparo = preparar_disparo(disparo_automatico)
 				disparo_valido = player.efectuar_disparo(disparo)
 
-				es_acierto = tablero_contrincante.dibujar_disparo_enemigo(disparo)
-				player.dibujar_disparo_propio(disparo, es_acierto)
+				if disparo_valido:
+					es_acierto = tablero_contrincante.dibujar_disparo_enemigo(disparo)
+					player.dibujar_disparo_propio(disparo, es_acierto)
+					turno_finalizado = es_acierto
+				else:
+					print("\nIntente realizar nuevamente un disparo :(\n")
 
 		if seleccion == 2:
 			print("\nFORMACION EN LINEA DE BATALLA")
@@ -118,8 +122,8 @@ def disparo_jugador(self, posicion, tablero_oponente): # {{{
 # }}}
 
 
+"""La computadora dispara hasta fallar
 def disparo_oponente(self, tablero_jugador):
-	"""La computadora dispara hasta fallar."""
 	print("\n--- Turno del oponente ---")
 
 	while True:
@@ -147,3 +151,4 @@ def disparo_oponente(self, tablero_jugador):
 			print(f"El oponente falló en ({fila}, {columna}). Fin del turno enemigo.")
 			tablero_jugador.mostrar(ocultar_barcos=False)
 			break
+"""

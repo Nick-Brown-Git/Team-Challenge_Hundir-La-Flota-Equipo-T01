@@ -50,8 +50,8 @@ class Tablero:
 
 		print(f"Validando posición: ({row}, {col})")
 
-		is_valid_row = row >= 0 and row < self.size
-		is_valid_col = col >= 0 and col < self.size
+		is_valid_row = (row >= 0) and (row < self.size)
+		is_valid_col = (col >= 0) and (col < self.size)
 		if (is_valid_row) and (is_valid_col):
 			posicion_valida = True
 		else:
@@ -279,10 +279,14 @@ class Tablero:
 		print(f"Efectuando disparo en ({x}, {y})...")
 
 		es_posicion_valida = self.__es_posicion_valida__(disparo)
-		es_repetido = self.__es_disparo_repetido__(disparo)
-		if (not es_posicion_valida) or (es_repetido):
-			print(f"{self.descripcion} dice: ¡MAYDAY! Error al efectar el disparo. Intente nuevamente.")
+		if not es_posicion_valida:
+			print(f"GUEST dice: ¡OMG! el disparo ha salido del tablero.")
 			return False
+		else:
+			es_repetido = self.__es_disparo_repetido__(disparo)
+			if es_repetido:
+				print(f"{self.descripcion.upper()} dice: ¡MAYDAY! Error al efectar el disparo. Intente nuevamente.")
+				return False
 
 		print("¡Disparo realizado con éxito!")
 		# self.dibujar_disparo_propio(disparo)
