@@ -16,12 +16,14 @@ class Tablero:
 		self.board_shoots = np.full((tamano, tamano), const.SIMBOLO_AGUA)
 		self.board_main = np.full((tamano, tamano), const.SIMBOLO_AGUA)
 
+		self.barcos = []
 		self.descripcion = descripcion
 		self.size = tamano
 		self.aciertos = 0
 
 		# Cargamos los barcos para que se encuentren disponibles en el tablero
-		self.__cargar_barcos__(barcos)
+		self.__crear_barcos__(barcos)
+		# self.__cargar_barcos__(barcos)
 
 		print("="*50)
 		print(f"Inicializando tableros de {self.size, self.size} para {self.descripcion}")
@@ -30,15 +32,24 @@ class Tablero:
 		print("\n")
 	# }}}
 
+	def __crear_barcos__(self, barcos): # {{{
+		print(f"Inicializando barcos para {self.descripcion}...")
+		for barco in barcos:
+			cantidad = barco["Cantidad"]
+			for x in range(cantidad):
+				ship = Barco(barco["Descripcion"], barco["Eslora"])
+				self.barcos.append(ship)
+	# }}}
+
+	"""
 	def __cargar_barcos__(self, barcos): # {{{
-		"""
 		Función para cargar una lista de barcos en el tablero
-		"""
 		if barcos is None or len(barcos) < 1:
 			raise ValueError("Lista de barcos vacía o inexistente.")
 
 		self.barcos = barcos
 	# }}}
+	"""
 
 	def __es_posicion_valida__(self, posicion): # {{{
 		"""
@@ -48,7 +59,7 @@ class Tablero:
 		row, col = posicion
 		posicion_valida = False
 
-		print(f"Validando posición: ({row}, {col})")
+		# print(f"Validando posición: ({row}, {col})")
 
 		is_valid_row = (row >= 0) and (row < self.size)
 		is_valid_col = (col >= 0) and (col < self.size)
@@ -64,7 +75,7 @@ class Tablero:
 		"""
 		Función para generar una posición aleatoria
 		"""
-		print("Creando posición aleatoria...")
+		# print("Creando posición aleatoria...")
 
 		return (random.randint(0,9), random.randint(0,9))
 	# }}}
@@ -300,9 +311,11 @@ class Tablero:
 		- verificar que el disparo no sea en un sitio utilizado anteriormente
 		"""
 		x, y = disparo
-		self.board_shoots[x][y] = const.SIMBOLO_ACIERTO if es_acierto else const.SIMBOLO_FALLO
-
-		self.mostrar_tablero_referencia()
+		if es_acierto:
+			self.board_shoots[x][y] = const.SIMBOLO_ACIERTO
+			self.aciertos += 1
+		else:
+			self.board_shoots[x][y] = const.SIMBOLO_FALLO
 	# }}}
 
 	def dibujar_disparo_enemigo(self, disparo): # {{{
@@ -318,14 +331,12 @@ class Tablero:
 		es_acierto = self.board_main[x][y] == const.SIMBOLO_BARCO
 		if not es_acierto:
 			self.board_main[x][y] = const.SIMBOLO_FALLO
-			print(f"{self.descripcion} dice: Comandante, eso estuvo cerca.")
-			print("¡MISS SHOOT!")
+			print(f"{self.descripcion} dice: ¡MISS SHOOT! Comandante, eso estuvo cerca.")
 
 			return False
 		else:
 			print("¡MAYDAY, MAYDAY, MAYDAY!")
-			print(f"{self.descripcion} dice: Comandante, nos ha alcanzado el último disparo.")
-			print("¡HIT!")
+			print(f"{self.descripcion} dice: ¡HIT! Comandante, nos ha alcanzado el último disparo.")
 			self.board_main[x][y] = const.SIMBOLO_ACIERTO
 
 			return True

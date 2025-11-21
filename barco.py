@@ -1,10 +1,4 @@
 class Barco:
-	# eslora
-	# descripcion
-	# posicion
-	# esta_tocado
-	# esta_hundido
-	# cant_aciertos
 	def __init__(self, descripcion, eslora):
 		self.descripcion = descripcion
 		self.eslora = eslora

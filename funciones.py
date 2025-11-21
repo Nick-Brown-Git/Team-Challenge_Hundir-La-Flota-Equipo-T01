@@ -3,11 +3,55 @@ import constants as const
 import numpy as np
 
 
+def bienvenido():
+		print("\n
+					¶¶¶
+					¶
+					¶¶¶¶¶¶¶¶¶¶¶¶¶
+					¶¶¶   ¶  ¶ ¶¶¶¶
+					¶¶¶   ¶¶¶¶   ¶¶
+					¶¶¶  ¶¶¶¶¶   ¶¶
+					¶¶¶  ¶¶¶¶¶   ¶
+					¶¶¶¶¶¶  ¶¶   ¶
+					¶         ¶¶¶¶
+			¶¶¶¶¶¶¶¶¶¶¶¶¶
+			¶¶           ¶¶
+			¶            ¶
+			¶             ¶
+			¶            ¶
+			¶            ¶ ¶¶
+			¶  ¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶
+	¶¶¶¶¶¶¶¶¶¶¶¶¶¶              ¶
+	¶            ¶¶             ¶¶    ¶
+	¶¶            ¶     ¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶
+	¶      ¶¶¶¶¶¶¶¶¶¶¶¶¶¶              ¶
+	¶¶     ¶¶           ¶              ¶¶
+	¶      ¶            ¶              ¶
+	¶      ¶¶           ¶             ¶¶
+	¶       ¶           ¶             ¶¶
+	¶¶       ¶           ¶¶            ¶
+	¶¶¶¶¶¶¶¶¶¶¶          ¶¶           ¶¶
+		¶ ¶ ¶¶        ¶¶¶     ¶¶¶¶¶¶¶¶     ¶¶¶
+		¶ ¶ ¶¶¶¶¶¶¶¶¶¶¶ ¶¶¶¶¶¶¶       ¶¶¶¶¶  ¶¶
+¶¶¶¶¶¶     ¶ ¶      ¶¶ ¶       ¶ ¶¶¶¶¶¶¶¶¶   ¶¶¶¶¶
+¶¶   ¶¶¶¶¶¶¶¶¶      ¶¶ ¶    ¶¶¶¶¶¶¶        ¶¶
+¶¶        ¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶    ¶¶      ¶
+	¶                            ¶¶ ¶    ¶
+	¶     ¶¶¶     ¶¶     ¶¶¶     ¶¶¶   ¶¶
+	¶   ¶¶ ¶¶   ¶¶ ¶    ¶ ¶¶          ¶
+	¶¶    ¶¶     ¶¶¶     ¶¶          ¶¶
+	¶¶                             ¶¶
+		¶¶                           ¶¶
+		¶¶                        ¶¶¶
+		¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶")
+		
+
+
 def crear_coordenadas_automaticas(): # {{{
 	"""
 	Función para generar coordenadas automáticas
 	"""
-	print("Generando coordenadas automáticas...")
+	# print("Generando coordenadas automáticas...")
 
 	return (
 		np.random.randint(0, const.TABLERO_DIMENSION),
@@ -16,8 +60,8 @@ def crear_coordenadas_automaticas(): # {{{
 # }}}
 
 def preparar_disparo(disparo_automatico=False): # {{{
-	print("Preparando disparo")
-	print("="*50)
+	print("\nPreparando disparo")
+	print("-"*50)
 
 	if disparo_automatico:
 		return crear_coordenadas_automaticas()
@@ -43,6 +87,14 @@ def mostrar_menu(): # {{{
 	return opcion
 # }}}
 
+def juego_finalizado(player, cantidad_aciertos): # {{{
+	if cantidad_aciertos == const.ACIERTOS:
+		print(f"Juego finalizado, ha ganado {player.upper()}!")
+		return True
+
+	return False
+# }}}
+
 def establecer_turno(player, tablero_contrincante, disparo_automatico=False): # {{{
 	"""
 	Función para crear turno de usuario
@@ -55,9 +107,11 @@ def establecer_turno(player, tablero_contrincante, disparo_automatico=False): # 
 	print("Turno de ", player.descripcion)
 	print("="*50)
 
-	turno_finalizado = True
-	while turno_finalizado:
-		seleccion = mostrar_menu()
+	es_final = False
+	otra_oportunidad = False
+	while not otra_oportunidad:
+		# seleccion = mostrar_menu()
+		seleccion = 1
 		if seleccion == 1:
 			disparo_valido = False
 			while not disparo_valido:
@@ -67,9 +121,13 @@ def establecer_turno(player, tablero_contrincante, disparo_automatico=False): # 
 				if disparo_valido:
 					es_acierto = tablero_contrincante.dibujar_disparo_enemigo(disparo)
 					player.dibujar_disparo_propio(disparo, es_acierto)
-					turno_finalizado = es_acierto
+
+					if es_acierto:
+						es_final = juego_finalizado(player.descripcion, player.aciertos)
+
+					otra_oportunidad = es_acierto
 				else:
-					print("\nIntente realizar nuevamente un disparo :(\n")
+					print("\nIntente realizar nuevamente un disparo :(")
 
 		if seleccion == 2:
 			print("\nFORMACION EN LINEA DE BATALLA")
@@ -81,7 +139,7 @@ def establecer_turno(player, tablero_contrincante, disparo_automatico=False): # 
 			print("="*50)
 			player.mostrar_tablero_referencia()
 
-	return turno_finalizado
+	return es_final
 # }}}
 
 def disparo_jugador(self, posicion, tablero_oponente): # {{{
@@ -122,7 +180,7 @@ def disparo_jugador(self, posicion, tablero_oponente): # {{{
 # }}}
 
 
-"""La computadora dispara hasta fallar
+"""La computadora dispara hasta fallar.
 def disparo_oponente(self, tablero_jugador):
 	print("\n--- Turno del oponente ---")
 
