@@ -1,31 +1,11 @@
 import constants as const
 
 import numpy as np
+import os
 
 
-def crear_coordenadas_automaticas(): # {{{
-	"""
-	Función para generar coordenadas automáticas
-	"""
-	# print("Generando coordenadas automáticas...")
-
-	return (
-		np.random.randint(0, const.TABLERO_DIMENSION),
-		np.random.randint(0, const.TABLERO_DIMENSION)
-	)
-# }}}
-
-def preparar_disparo(disparo_automatico=False): # {{{
-	print("\nPreparando disparo")
-	print("-"*50)
-
-	if disparo_automatico:
-		return crear_coordenadas_automaticas()
-	else:
-		x = int(input("Ingresar la coordenada x a la que desea disparar:"))
-		y = int(input("Ingresar la coordenada y a la que desea disparar:"))
-
-		return (x, y)
+def clear_console(): # {{{
+	os.system("cls" if os.name == "nt" else "clear")
 # }}}
 
 def mostrar_menu(): # {{{
@@ -35,23 +15,97 @@ def mostrar_menu(): # {{{
 		print("1) Realizar disparo")
 		print("2) Ver posicionamiento de barcos propios")
 		print("3) Ver disparos realizados")
-		print("-"*50)
+		print("-"*80)
 		opcion = int(input("OPCIÓN:"))
 		if (opcion < 1) or (opcion > 3):
-			print("-"*50)
+			print("-"*80)
 			print("Opción incorrecta. Intente nuevamente\n")
+
 	return opcion
+# }}}
+
+def crear_coordenadas_automaticas(): # {{{
+	"""
+	Función para generar coordenadas x e y de forma automática
+
+	Return:
+		(x,y): tupla de coordenadas x e y
+	"""
+	# print("Generando coordenadas automáticas...")
+
+	return (
+		np.random.randint(0, const.TABLERO_DIMENSION),
+		np.random.randint(0, const.TABLERO_DIMENSION)
+	)
+# }}}
+
+def posicionar_disparo(disparo_automatico=False): # {{{
+	"""
+	Función que permite posicionar el disparo (elegir coordenadas de disparo)
+	o realizar disparo automático.
+
+	Args:
+		disparo_automatico: opcion para configurar disparo automático o manual
+
+	Return:
+		(x, y): coordenadas de disparo
+	"""
+	print("\nPreparando disparo")
+	print("-"*80)
+
+	if disparo_automatico:
+		return crear_coordenadas_automaticas()
+	else:
+		x = int(input("Ingresar la coordenada x a la que desea disparar: "))
+		y = int(input("Ingresar la coordenada y a la que desea disparar: "))
+
+		return (x, y)
 # }}}
 
 def juego_finalizado(player, cantidad_aciertos): # {{{
 	if cantidad_aciertos == const.ACIERTOS:
-		print(f"Juego finalizado, ha ganado {player.upper()}!")
+		msg = f"""
+╔════════════════════════════════════════════════════════╗
+║                                                        ║
+║  ██╗  ██╗ █████╗ ███████╗                              ║
+║  ██║  ██║██╔══██╗██╔════╝                              ║
+║  ███████║███████║███████╗                              ║
+║  ██╔══██║██╔══██║╚════██║                              ║
+║  ██║  ██║██║  ██║███████║                              ║
+║  ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝                              ║
+║                                                        ║
+║   ██████╗  █████╗ ███╗   ██╗ █████╗ ██████╗  ██████╗   ║
+║  ██╔════╝ ██╔══██╗████╗  ██║██╔══██╗██╔══██╗██╔═══██╗  ║
+║  ██║  ███╗███████║██╔██╗ ██║███████║██║  ██║██║   ██║  ║
+║  ██║   ██║██╔══██║██║╚██╗██║██╔══██║██║  ██║██║   ██║  ║
+║  ╚██████╔╝██║  ██║██║ ╚████║██║  ██║██████╔╝╚██████╔╝  ║
+║   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚═════╝  ╚═════╝   ║
+║                                                        ║
+╚════════════════════════════════════════════════════════╝
+			"""
+		print(f"¡Juego finalizado!\nFelicitaciones {player.upper()}", msg)
 		return True
 
 	return False
 # }}}
 
-def establecer_turno(player, tablero_contrincante, disparo_automatico=False): # {{{
+def mecanica_turno(player, contrincante, disparo_automatico=False): # {{{
+	es_disparo_valido = False
+	while not es_disparo_valido:
+		coordenadas = posicionar_disparo(disparo_automatico)
+
+		es_disparo_valido = player.disparar(coordenadas)
+		if es_disparo_valido:
+			print("Esperando reporte enemigo...\n")
+			es_acierto = contrincante.dibujar_disparo_enemigo(coordenadas)
+			player.dibujar_disparo_propio(coordenadas, es_acierto)
+		else:
+			print("\nIntente realizar nuevamente un disparo 🙃")
+
+	return es_acierto
+# }}}
+
+def establecer_turno(player, contrincante, disparo_automatico=False): # {{{
 	"""
 	Función para crear turno de usuario
 
@@ -60,77 +114,41 @@ def establecer_turno(player, tablero_contrincante, disparo_automatico=False): # 
 		- disparo_automatico: permite la generación automática de coordenadas
 	"""
 
-	print("Turno de ", player.descripcion)
-	print("="*50)
+	clear_console()
+	print("="*80)
+	print(f"Turno de {player.descripcion}".upper())
+	print("="*80)
 
-	es_final = False
-	otra_oportunidad = False
-	while not otra_oportunidad:
-		# seleccion = mostrar_menu()
-		seleccion = 1
+	hay_ganador = False
+	turno_finalizado = False
+	while not turno_finalizado:
+		seleccion = mostrar_menu()
+		# seleccion = 1
 		if seleccion == 1:
-			disparo_valido = False
-			while not disparo_valido:
-				disparo = preparar_disparo(disparo_automatico)
-				disparo_valido = player.efectuar_disparo(disparo)
+			es_acierto = mecanica_turno(player,
+										contrincante,
+										disparo_automatico)
 
-				if disparo_valido:
-					es_acierto = tablero_contrincante.dibujar_disparo_enemigo(disparo)
-					player.dibujar_disparo_propio(disparo, es_acierto)
-
-					if es_acierto:
-						es_final = juego_finalizado(player.descripcion, player.aciertos)
-
-					otra_oportunidad = es_acierto
-				else:
-					print("\nIntente realizar nuevamente un disparo :(")
+			if not es_acierto:
+				turno_finalizado = True
+			else:
+				hay_ganador = juego_finalizado(player.descripcion,
+											   player.aciertos)
+				turno_finalizado = hay_ganador
 
 		if seleccion == 2:
-			print("\nFORMACION EN LINEA DE BATALLA")
-			print("="*50)
+			print("\nESCUADRA DE BATALLA")
+			print("="*80)
 			player.mostrar_tablero_barcos()
 
 		if seleccion == 3:
-			print("\nREGISTRO DE DISPAROS")
-			print("="*50)
+			print("\nHISTORIAL DE DISPAROS")
+			print("="*80)
 			player.mostrar_tablero_referencia()
 
-	return es_final
-# }}}
+	print("\nTURNO FINALIZADO")
+	print("-"*80)
+	print(f"Reporte del turno:\n\tAciertos: {player.aciertos}\n")
 
-def disparo_jugador(self, posicion, tablero_oponente): # {{{
-	"""El jugador dispara hasta fallar.
-
-	disparo_automatico = True/False
-	"""
-	print("\n--- Turno del id_jugador ---")
-	disparo_valido = False
-	while not disparo_valido:
-		try:
-			fila = int(input(f"Ingrese la fila (0-{self.tamaño-1}): "))
-			columna = int(input(f"Ingrese la columna (0-{self.tamaño-1}): "))
-
-			es_posicion_valida = self.__posicion_valida__((fila, columna))
-			if not es_posicion_valida:
-				print("¡Disparo fuera del tablero! Intenta otra vez.")
-
-			celda = tablero_oponente.matriz[fila][columna]
-			if celda in ('X', '-'):
-				print("¡Ya disparaste ahí! Intenta otra vez.")
-
-
-			if celda == 'O':
-				tablero_oponente.matriz[fila][columna] = 'X'
-				print(f"¡Impacto en ({fila}, {columna})! ¡Vuelves a disparar!")
-				tablero_oponente.mostrar(ocultar_barcos=True)
-
-				continue  # puede seguir disparando
-			else:
-				tablero_oponente.matriz[fila][columna] = '-'
-				print(f"Fallo en ({fila}, {columna}). Fin de tu turno.")
-				tablero_oponente.mostrar(ocultar_barcos=True)
-				break
-
-		except ValueError:
-			print("Por favor, ingresa solo números válidos.")
+	return hay_ganador
 # }}}

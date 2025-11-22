@@ -25,10 +25,10 @@ class Tablero:
 		self.__crear_barcos__(barcos)
 		# self.__cargar_barcos__(barcos)
 
-		print("="*50)
+		print("="*80)
 		print(f"Inicializando tableros de {self.size, self.size} para {self.descripcion}")
 		print(f"Se han cargado {len(self.barcos)} barcos en el tablero.")
-		print("="*50)
+		print("="*80)
 		print("\n")
 	# }}}
 
@@ -66,7 +66,7 @@ class Tablero:
 		if (is_valid_row) and (is_valid_col):
 			posicion_valida = True
 		else:
-			print(f"La posición ({row},{col}) se encuentra fuera de los límites del tablero.\n")
+			print(f"LA POSICIÓN ({row},{col}) SE ENCUENTRA FUERA DE LOS LÍMITES DEL TABLERO.")
 
 		return posicion_valida
 	# }}}
@@ -238,9 +238,9 @@ class Tablero:
 		"""
 
 		for index, barco in enumerate(self.barcos):
-			print("="*50)
+			print("="*80)
 			print(f"Posicionando barco nº{index}: {barco.descripcion.upper()}")
-			print("="*50)
+			print("="*80)
 
 			barco_posicionado = self.posicionar_barco(barco)
 			if barco_posicionado:
@@ -256,9 +256,9 @@ class Tablero:
 			- barco: barco que se desea dibujar
 		"""
 		if isinstance(barco, Barco):
-			print("="*50) 
+			print("="*80) 
 			print("Dibujando barco...") 
-			print("-"*50) 
+			print("-"*80) 
 			if barco.esta_posicionado():
 				barco.mostrar()
 				coordenadas = barco.coordenadas
@@ -271,7 +271,7 @@ class Tablero:
 				print(self.board_main)
 			else:
 				print("No se puede dibujar un barco que no esta posicionado en el tablero.\n")
-			print("="*50)
+			print("="*80)
 	# }}}
 
 	def __es_disparo_repetido__(self, disparo): # {{{
@@ -285,22 +285,24 @@ class Tablero:
 		return es_repetido
 	# }}}
 
-	def efectuar_disparo(self, disparo): # {{{
-		x, y = disparo
+	def disparar(self, en_coordenadas): # {{{
+		x, y = en_coordenadas
 		print(f"Efectuando disparo en ({x}, {y})...")
 
-		es_posicion_valida = self.__es_posicion_valida__(disparo)
+		es_posicion_valida = self.__es_posicion_valida__(en_coordenadas)
 		if not es_posicion_valida:
 			print(f"GUEST dice: ¡OMG! el disparo ha salido del tablero.")
+
 			return False
 		else:
-			es_repetido = self.__es_disparo_repetido__(disparo)
+			es_repetido = self.__es_disparo_repetido__(en_coordenadas)
 			if es_repetido:
 				print(f"{self.descripcion.upper()} dice: ¡MAYDAY! Error al efectar el disparo. Intente nuevamente.")
+
 				return False
 
 		print("¡Disparo realizado con éxito!")
-		# self.dibujar_disparo_propio(disparo)
+		# self.dibujar_disparo_propio(en_coordenadas)
 		return True
 	# }}}
 
@@ -332,11 +334,16 @@ class Tablero:
 		if not es_acierto:
 			self.board_main[x][y] = const.SIMBOLO_FALLO
 			print(f"{self.descripcion} dice: ¡MISS SHOOT! Comandante, eso estuvo cerca.")
+			print(f"{self.descripcion} dice: ¡MISS SHOOT! Comandante, debemos realizar maniobras evasivas.")
+			print(f"Comandante dice: La suerte está echada (◕‿◕)")
+			print(f"{self.descripcion} dice: {const.WAVE}\n")
 
 			return False
 		else:
-			print("¡MAYDAY, MAYDAY, MAYDAY!")
+			print(f"{self.descripcion} dice: ¡MAYDAY, MAYDAY, MAYDAY!")
 			print(f"{self.descripcion} dice: ¡HIT! Comandante, nos ha alcanzado el último disparo.")
+			print(f"{self.descripcion} dice: 🛥\n")
+
 			self.board_main[x][y] = const.SIMBOLO_ACIERTO
 
 			return True

@@ -1,19 +1,29 @@
-import constants as constants
+import constants as const
 import funciones as utils
+import os
 
 from barco import Barco
 from tablero import Tablero
 
 
-barcos = constants.BARCOS
+utils.clear_console()
+print(const.LOGO)
+
+is_valid = False
+while not is_valid:
+	user = input("Ingrese su nombre de usuario: ")
+	if user.strip() != "":
+		is_valid = True
+
+barcos = const.BARCOS
 
 print("\n")
-player = Tablero("Jugador", constants.TABLERO_DIMENSION, barcos)
+player = Tablero(user, const.TABLERO_DIMENSION, barcos)
 print("\n")
 player.posicionar_barcos()
 print("\n")
 print("\n")
-opponent = Tablero("IA", constants.TABLERO_DIMENSION, barcos)
+opponent = Tablero("IA", const.TABLERO_DIMENSION, barcos)
 print("\n")
 opponent.posicionar_barcos()
 print("\n")
@@ -23,22 +33,22 @@ print("\n")
 
 print("\n")
 print("PARTIDA INICIADA")
-print("="*50)
+print("="*80)
 
 juego_finalizado = False
 while not juego_finalizado:
-	es_final = utils.establecer_turno(player, opponent, True)
-	print(f"HA FINALIZADO EL TURNO DE {player.descripcion}")
-	print(f"Reporte del turno:\n\tAciertos: {player.aciertos}\n")
+	juego_finalizado = utils.establecer_turno(player, opponent, False)
+	if juego_finalizado:
+		print("\nESCUADRA DE BATALLA")
+		player.mostrar_tablero_barcos()
+		print("\nHISTORIAL DE DISPAROS")
+		player.mostrar_tablero_referencia()
+		break
 
-	if es_final:
-		juego_finalizado = True
-		continue
-
-	es_final = utils.establecer_turno(opponent, player, True)
-	print(f"HA FINALIZADO EL TURNO DE {opponent.descripcion}\n")
-	print(f"Reporte del turno:\n\tAciertos: {opponent.aciertos}\n")
-
-	if es_final:
-		juego_finalizado = True
-		continue
+	juego_finalizado = utils.establecer_turno(opponent, player, True)
+	if juego_finalizado:
+		print("\nESCUADRA DE BATALLA")
+		opponent.mostrar_tablero_barcos()
+		print("\nHISTORIAL DE DISPAROS")
+		opponent.mostrar_tablero_referencia()
+		break
