@@ -7,8 +7,6 @@ from tablero import Tablero
 
 barcos = constants.BARCOS
 
-utils.bienvenido()
-
 print("\n")
 player = Tablero("Jugador", constants.TABLERO_DIMENSION, barcos)
 print("\n")
