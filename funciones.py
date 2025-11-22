@@ -134,35 +134,3 @@ def disparo_jugador(self, posicion, tablero_oponente): # {{{
 		except ValueError:
 			print("Por favor, ingresa solo números válidos.")
 # }}}
-
-
-"""La computadora dispara hasta fallar.
-def disparo_oponente(self, tablero_jugador):
-	print("\n--- Turno del oponente ---")
-
-	while True:
-		# Elegir coordenadas aleatorias válidas
-		fila = random.randint(0, self.tamaño - 1)
-		columna = random.randint(0, self.tamaño - 1)
-
-		celda = tablero_jugador.matriz[fila][columna]
-
-		# Evita disparar donde ya disparó
-		if celda in ('X', '-'):
-			print("¡Ya disparaste ahí! Intenta otra vez.")
-			continue  # buscar otro disparo válido
-		
-		# Si acierta
-		if celda == 'O':
-			tablero_jugador.matriz[fila][columna] = 'X'
-			print(f"El oponente impactó en ({fila}, {columna}) ¡dispara de nuevo!")
-			tablero_jugador.mostrar(ocultar_barcos=False)  # Puedes ajustar si quieres ocultar
-			continue  # sigue disparando
-		
-		# Si falla
-		else:
-			tablero_jugador.matriz[fila][columna] = '-'
-			print(f"El oponente falló en ({fila}, {columna}). Fin del turno enemigo.")
-			tablero_jugador.mostrar(ocultar_barcos=False)
-			break
-"""

@@ -66,4 +66,4 @@ class Barco:
 		print(f"¿Barco posicionado? {esta_posicionado}")
 		if esta_posicionado:
 			print(f"\tORIENTACIÓN: {self.orientacion}") 
-			print(f"\tCOORDENADAS: {self.coordenadas}") 
+			print(f"\tCOORDENADAS: {self.coordenadas}")
